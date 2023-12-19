@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/OleksandrMykhailovskyi/habits-tracker#readme",
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.10",
     "tailwindcss": "^3.3.6"
   }
 }
