@@ -28,41 +28,42 @@
                     <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-purple-800">Achieved</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 bg-white">
-                  <tr class="divide-x divide-gray-200">
+                <tbody id="tbody_id" class="divide-y divide-gray-200 bg-white">
+                  <tr onclick="cellClickHandler(event, 0)" id="habit-row-0" class="divide-x divide-gray-200">
                     <td class="whitespace-nowrap p-4 text-sm font-medium text-gray-900">Read 30 mins/1 day</td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-900"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-900"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day-goal whitespace-nowrap p-4 text-sm text-gray-900">0</td>
+                    <td class="habit-day-achieved whitespace-nowrap p-4 text-sm text-gray-900">0</td>
                   </tr>
-                  <tr class="divide-x divide-gray-200">
+                  <tr onclick="cellClickHandler(event, 1)" id="habit-row-1" class="divide-x divide-gray-200">
                     <td class="whitespace-nowrap p-4 text-sm font-medium text-gray-900">Go running every day</td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-900"></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-900"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500 text-center"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                    <td class="habit-day-goal whitespace-nowrap p-4 text-sm text-gray-900">0</td>
+                    <td class="habit-day-achieved whitespace-nowrap p-4 text-sm text-gray-900">0</td>
                   </tr>
       
                 </tbody>
               </table>
         </div>
     </div>
+    <script src="index.js"></script>
 </body>
 </html>

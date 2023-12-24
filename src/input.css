@@ -3,7 +3,12 @@
 @tailwind utilities;
 
 @layer base {
-    .container {
-      margin: 0 auto;
-    }
+  .container {
+    margin: 0 auto;
   }
+}
+
+.day_selected {
+  background-color: purple;
+  padding: 12px;
+}
