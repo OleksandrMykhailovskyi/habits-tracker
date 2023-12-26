@@ -1,10 +1,44 @@
 const habitsContainer = document.querySelector("#tbody_id")
 
-const myRow = document.querySelector("#habit-row-0");
-const itemCellElements = myRow.getElementsByClassName("habit-day");
+const add_form = document.querySelector("#my-form")
+const inputs = add_form.elements;
+const newHabitNameInput = inputs["name"];
+const newHabitGoalInput = inputs["goal"];
 
-const goalAmountCell = document.querySelector("#habit-row-0 .habit-day-goal");
-goalAmountCell.innerHTML = itemCellElements.length;
+const habitsData = JSON.parse(localStorage.getItem("habitsData"));
+
+// the function that creates the array of days
+const getNewDaysArray = (daysNum) => {
+    const resObj = [];
+
+    for(let i = 0; i<daysNum; i++){
+        resObj.push({
+            checked: false
+        })
+    }
+
+    return resObj;
+}
+
+
+add_form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    console.log(newHabitNameInput.value, 'newHabitNameInput.value')
+
+    const newHabitPayload = {
+        title: newHabitNameInput.value,
+        goal: +newHabitGoalInput.value,
+        achieved: 0,
+        days: getNewDaysArray(+newHabitGoalInput.value)
+    }
+
+    const updatedHabitsData = [
+        ...habitsData,
+        newHabitPayload
+    ]
+
+    localStorage.setItem("habitsData", JSON.stringify(updatedHabitsData));
+  });
 
 const toggleCellStyles = (cell) => {
     if(cell.classList.contains("habit-day")){
@@ -95,12 +129,6 @@ const toggleCellStyles = (cell) => {
 //     }
 // ]
 
-// localStorage.setItem("habitsData", JSON.stringify(habitsMock));
-
-const habitsData = JSON.parse(localStorage.getItem("habitsData"));
-
-console.log(habitsData, 'habitsData')
-
 // styles arrays
 const rowCellClasses = ["divide-x", "divide-gray-200"];
 const headingCellClasses = ["habit-heading", "whitespace-nowrap", "p-4", "text-sm", "font-medium", "text-gray-900"];
@@ -109,6 +137,7 @@ const goalCellStyles = ["habit-day-goal", "whitespace-nowrap", "p-4", "text-sm",
 const achievedCellStyles = ["habit-day-achieved", "whitespace-nowrap", "p-4", "text-sm", "text-gray-900"];
 
 document.addEventListener('DOMContentLoaded', function() {
+    // localStorage.setItem("habitsData", JSON.stringify(habitsMock))
     habitsData.forEach(({days, title, goal, achieved}, habitIndex) => {
         //create habit row
         const tableRow = document.createElement("tr");
@@ -185,21 +214,4 @@ document.addEventListener("click", function(event){
         localStorage.setItem("habitsData", JSON.stringify(achievedData))
 
     }
-})
-
-function cellClickHandler (event, row_id) {
-    let achivedCounter = 0;
-
-    toggleCellStyles(event.target)
-
-    for (let element of event.currentTarget.children){
-        if(element.classList.contains("day_selected")){
-            ++achivedCounter
-        }
-    }
-
-    const achivedAmountCell = document.querySelector(`#habit-row-${row_id} .habit-day-achieved`);
-
-    achivedAmountCell.innerText = achivedCounter;
-}
-
+});
