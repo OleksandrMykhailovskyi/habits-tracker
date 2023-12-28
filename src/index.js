@@ -20,16 +20,28 @@ const getNewDaysArray = (daysNum) => {
     return resObj;
 }
 
+const deleteHabit = (id) => {
+    const updatedData = habitsData.filter((habit) => {
+        return habit.id !== id
+    });
+
+    localStorage.setItem("habitsData", JSON.stringify(updatedData));
+}
+
+const getRandomNumber = () => {
+    return Math.random().toFixed(4)
+}
+
 
 add_form.addEventListener("submit", (e) => {
     e.preventDefault();
-    console.log(newHabitNameInput.value, 'newHabitNameInput.value')
 
     const newHabitPayload = {
         title: newHabitNameInput.value,
         goal: +newHabitGoalInput.value,
         achieved: 0,
-        days: getNewDaysArray(+newHabitGoalInput.value)
+        days: getNewDaysArray(+newHabitGoalInput.value),
+        id: +getRandomNumber()
     }
 
     const updatedHabitsData = [
@@ -57,6 +69,7 @@ const toggleCellStyles = (cell) => {
 //         title: 'Read 30 mins/1 day 1',
 //         goal: 10,
 //         achieved: 0,
+//         id: 0,
 //         days: [
 //             {
 //                 checked: false
@@ -94,6 +107,7 @@ const toggleCellStyles = (cell) => {
 //         title: 'Go running every day 1',
 //         goal: 10,
 //         achieved: 0,
+//         id: 1,
 //         days: [
 //             {
 //                 checked: false
@@ -135,19 +149,26 @@ const headingCellClasses = ["habit-heading", "whitespace-nowrap", "p-4", "text-s
 const dayCellClasses = ["habit-day",  "whitespace-nowrap", "p-4", "text-sm"];
 const goalCellStyles = ["habit-day-goal", "whitespace-nowrap", "p-4", "text-sm", "text-gray-900"];
 const achievedCellStyles = ["habit-day-achieved", "whitespace-nowrap", "p-4", "text-sm", "text-gray-900"];
+const deleteButtonClasses = ["btn-delete", "ml-2", "p-2", "text-sm", "text-gray-900", "bg-slate-500"];
 
 document.addEventListener('DOMContentLoaded', function() {
-    // localStorage.setItem("habitsData", JSON.stringify(habitsMock))
-    habitsData.forEach(({days, title, goal, achieved}, habitIndex) => {
+    // localStorage.setItem("habitsData", JSON.stringify(habitsMock));
+    // localStorage.clear()
+    habitsData.forEach(({days, title, goal, achieved, id}) => {
         //create habit row
         const tableRow = document.createElement("tr");
         tableRow.classList.add(...rowCellClasses);
-        tableRow.dataset.index = habitIndex;
+        tableRow.dataset.index = id;
 
         //habit heading
         const rowHeading = document.createElement("td");
         rowHeading.classList.add(...headingCellClasses);
-        rowHeading.innerText = title;
+        rowHeading.textContent = title;
+        //delete button create
+        const deleteButton = document.createElement("button");
+        deleteButton.classList.add(...deleteButtonClasses);
+        deleteButton.textContent = 'Delete';
+        rowHeading.append(deleteButton);
         tableRow.append(rowHeading);
 
         //habit days
@@ -162,13 +183,13 @@ document.addEventListener('DOMContentLoaded', function() {
         //habit goal
         const goalCell = document.createElement("td");
         goalCell.classList.add(...goalCellStyles);
-        goalCell.innerText = goal;
+        goalCell.textContent = goal;
         tableRow.append(goalCell);
 
         //habit achieved
         const achievedCell = document.createElement("td");
         achievedCell.classList.add(...achievedCellStyles);
-        achievedCell.innerText = achieved;
+        achievedCell.textContent = achieved;
         tableRow.append(achievedCell);
 
         //append habit row into habitsContainer element
@@ -176,7 +197,13 @@ document.addEventListener('DOMContentLoaded', function() {
     })
 });
 
-document.addEventListener("click", function(event){
+habitsContainer.addEventListener("click", function(event){
+    if(event.target.classList.contains("btn-delete")){
+        //TODO needs improvement
+        const selectedRow = event.target.parentNode.parentNode;
+        const rowId = selectedRow.dataset.index;
+        deleteHabit(+rowId);
+    }
     if(event.target.tagName === "TD"){
         let achivedCounter = 0;
 
