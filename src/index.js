@@ -1,4 +1,5 @@
-const habitsContainer = document.querySelector("#tbody_id")
+const habitsContainer = document.querySelector("#tbody_id");
+const habitsHeaderContainer = document.querySelector("#thead_id")
 
 const add_form = document.querySelector("#my-form")
 const inputs = add_form.elements;
@@ -147,13 +148,27 @@ const toggleCellStyles = (cell) => {
 const rowCellClasses = ["divide-x", "divide-gray-200"];
 const headingCellClasses = ["habit-heading", "whitespace-nowrap", "p-4", "text-sm", "font-medium", "text-gray-900"];
 const dayCellClasses = ["habit-day",  "whitespace-nowrap", "p-4", "text-sm"];
+const dayCellDisabledClasses = ["whitespace-nowrap", "p-4", "text-sm", "bg-slate-100"];
 const goalCellStyles = ["habit-day-goal", "whitespace-nowrap", "p-4", "text-sm", "text-gray-900"];
 const achievedCellStyles = ["habit-day-achieved", "whitespace-nowrap", "p-4", "text-sm", "text-gray-900"];
 const deleteButtonClasses = ["btn-delete", "ml-2", "p-2", "text-sm", "text-gray-900", "bg-slate-500"];
 
+// table heading styles arrays
+const tableHeadingTableRowClasses = ["divide-x", "divide-gray-200"];
+const tableHeadingTableCategoryNameClasses = ["px-4", "py-3.5", "text-left", "text-sm", "font-semibold", "text-purple-800"];
+const tableHeadingDayIndexClasses = ["px-4", "py-3.5", "text-left", "text-sm", "font-semibold", "text-gray-900"];
+
 document.addEventListener('DOMContentLoaded', function() {
     // localStorage.setItem("habitsData", JSON.stringify(habitsMock));
-    // localStorage.clear()
+    // localStorage.clear();
+    let daysCounter = 0;
+
+    habitsData.forEach(({ days }) => {
+        if(days.length>daysCounter){
+            daysCounter = days.length;
+        }
+    })
+
     habitsData.forEach(({days, title, goal, achieved, id}) => {
         //create habit row
         const tableRow = document.createElement("tr");
@@ -164,6 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const rowHeading = document.createElement("td");
         rowHeading.classList.add(...headingCellClasses);
         rowHeading.textContent = title;
+
         //delete button create
         const deleteButton = document.createElement("button");
         deleteButton.classList.add(...deleteButtonClasses);
@@ -172,12 +188,20 @@ document.addEventListener('DOMContentLoaded', function() {
         tableRow.append(rowHeading);
 
         //habit days
-        days.forEach((item) => {
+        days.forEach((item, index) => {
             const tableCell = document.createElement("td");
             tableCell.classList.add(...dayCellClasses);
             tableCell.dataset.isChecked = item.checked;
-            item.checked && tableCell.classList.add("day_selected")
+            item.checked && tableCell.classList.add("day_selected");
             tableRow.append(tableCell);
+
+            if(days.length-1 === index && index<daysCounter){
+                for(let j = 0; j < daysCounter - index-1; j++){
+                    const tableCellDisabled = document.createElement("td");
+                    tableCellDisabled.classList.add(...dayCellDisabledClasses);
+                    tableRow.append(tableCellDisabled);
+                }
+            }
         });
 
         //habit goal
@@ -195,6 +219,37 @@ document.addEventListener('DOMContentLoaded', function() {
         //append habit row into habitsContainer element
         habitsContainer.append(tableRow);
     })
+
+    const headingTableRow = document.createElement("tr");
+    headingTableRow.classList.add(...tableHeadingTableRowClasses);
+
+    // heading habit name
+    const headingHabitName = document.createElement("th");
+    headingHabitName.classList.add(...tableHeadingTableCategoryNameClasses);
+    headingHabitName.textContent = "Habit";
+    headingTableRow.append(headingHabitName);
+
+    // habit heading days
+    for(let i = 0 ; i<daysCounter; i++){
+        const tableHeadingDay = document.createElement("th");
+        tableHeadingDay.classList.add(...tableHeadingDayIndexClasses);
+        tableHeadingDay.textContent = i + 1;
+        headingTableRow.append(tableHeadingDay);
+    }
+
+    // heading habit goal number
+    const headingHabitGoal = document.createElement("th");
+    headingHabitGoal.classList.add(...tableHeadingTableCategoryNameClasses);
+    headingHabitGoal.textContent = "Goal";
+    headingTableRow.append(headingHabitGoal);
+
+    // heading habit goal number
+    const headingAchievedGoal = document.createElement("th");
+    headingAchievedGoal.classList.add(...tableHeadingTableCategoryNameClasses);
+    headingAchievedGoal.textContent = "Achieved";
+    headingTableRow.append(headingAchievedGoal);
+
+    habitsHeaderContainer.append(headingTableRow);
 });
 
 habitsContainer.addEventListener("click", function(event){
@@ -218,16 +273,17 @@ habitsContainer.addEventListener("click", function(event){
         const habitDays = selectedRow.querySelectorAll(".habit-day");
 
         for (let i = 0; i < habitDays.length; i++){
+            //TODO: refactor it
             if(habitDays[i].dataset.isChecked === "true"){
                 ++achivedCounter;
-                habitsData[rowId].days[i].checked = true;
+                habitsData.find((habit) => habit.id === +rowId).days[i].checked = true;
             }else{
-                habitsData[rowId].days[i].checked = false;
+                habitsData.find((habit) => habit.id === +rowId).days[i].checked = false;
             }
         }
 
-        const achievedData = habitsData.map((habit, index)=> {
-            if(+rowId === index){
+        const achievedData = habitsData.map((habit)=> {
+            if(+rowId === habit.id){
                 return {
                     ...habit,
                     achieved: achivedCounter,
