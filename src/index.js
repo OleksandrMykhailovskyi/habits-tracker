@@ -1,7 +1,8 @@
 const habitsContainer = document.querySelector("#tbody_id");
-const habitsHeaderContainer = document.querySelector("#thead_id")
+const habitsHeaderContainer = document.querySelector("#thead_id");
 
-const add_form = document.querySelector("#my-form")
+const add_form = document.querySelector("#my-form");
+const edit_habit_form = document.querySelector(".edit-habit-form");
 const inputs = add_form.elements;
 const newHabitNameInput = inputs["name"];
 const newHabitGoalInput = inputs["goal"];
@@ -22,9 +23,7 @@ const getNewDaysArray = (daysNum) => {
 }
 
 const deleteHabit = (id) => {
-    const updatedData = habitsData.filter((habit) => {
-        return habit.id !== id
-    });
+    const updatedData = habitsData.filter((habit) => habit.id !== id);
 
     localStorage.setItem("habitsData", JSON.stringify(updatedData));
 }
@@ -51,7 +50,10 @@ add_form.addEventListener("submit", (e) => {
     ]
 
     localStorage.setItem("habitsData", JSON.stringify(updatedHabitsData));
-  });
+});
+
+console.log(edit_habit_form, 'edit_habit_form')
+
 
 const toggleCellStyles = (cell) => {
     if(cell.classList.contains("habit-day")){
@@ -151,7 +153,9 @@ const dayCellClasses = ["habit-day",  "whitespace-nowrap", "p-4", "text-sm"];
 const dayCellDisabledClasses = ["whitespace-nowrap", "p-4", "text-sm", "bg-slate-100"];
 const goalCellStyles = ["habit-day-goal", "whitespace-nowrap", "p-4", "text-sm", "text-gray-900"];
 const achievedCellStyles = ["habit-day-achieved", "whitespace-nowrap", "p-4", "text-sm", "text-gray-900"];
-const deleteButtonClasses = ["btn-delete", "ml-2", "p-2", "text-sm", "text-gray-900", "bg-slate-500"];
+const deleteButtonClasses = ["btn-delete", "ml-2", "p-2", "text-sm", "text-slate-200", "bg-slate-500", "rounded"];
+const editButtonClasses = ["btn-edit", "ml-2", "p-2", "text-sm", "text-slate-200", "bg-slate-500", "rounded"];
+const inputClasses = ["text-black", "border"];
 
 // table heading styles arrays
 const tableHeadingTableRowClasses = ["divide-x", "divide-gray-200"];
@@ -163,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // localStorage.clear();
     let daysCounter = 0;
 
+    //the biggest habit goal in days
     habitsData.forEach(({ days }) => {
         if(days.length>daysCounter){
             daysCounter = days.length;
@@ -180,11 +185,18 @@ document.addEventListener('DOMContentLoaded', function() {
         rowHeading.classList.add(...headingCellClasses);
         rowHeading.textContent = title;
 
-        //delete button create
+        //edit Habit button
+        const editButton = document.createElement("button");
+        editButton.classList.add(...editButtonClasses);
+        editButton.textContent = 'Edit title';
+        rowHeading.append(editButton);
+
+        //delete Habit button
         const deleteButton = document.createElement("button");
         deleteButton.classList.add(...deleteButtonClasses);
         deleteButton.textContent = 'Delete';
         rowHeading.append(deleteButton);
+
         tableRow.append(rowHeading);
 
         //habit days
@@ -255,9 +267,27 @@ document.addEventListener('DOMContentLoaded', function() {
 habitsContainer.addEventListener("click", function(event){
     if(event.target.classList.contains("btn-delete")){
         //TODO needs improvement
-        const selectedRow = event.target.parentNode.parentNode;
+        const selectedRow = event.target.closest("tr");
         const rowId = selectedRow.dataset.index;
         deleteHabit(+rowId);
+    }
+    if(event.target.classList.contains("btn-edit")){
+        // create form element
+        const editForm = document.createElement("form");
+        editForm.classList.add("edit-habit-form");
+        // create edit title input
+        const editTitleInput = document.createElement("input");
+        editTitleInput.setAttribute("placeholder", "Please fill in a new title");
+        editTitleInput.setAttribute("name", "title");
+        editTitleInput.classList.add(...inputClasses);
+        // create edit button
+        const editTitleButton = document.createElement("input");
+        editTitleButton.setAttribute("type", "submit");
+        editTitleButton.setAttribute("value", "Submit");
+        // add the elements inside a form
+        editForm.appendChild(editTitleInput);
+        editForm.appendChild(editTitleButton);
+        document.body.appendChild(editForm);
     }
     if(event.target.tagName === "TD"){
         let achivedCounter = 0;
