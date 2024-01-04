@@ -20,47 +20,51 @@
           </label>
           <button class="bg-slate-500 p-2 rounded text-slate-200" type="submit">Add habit</button>
         </form>
-        <div class="w-full">
-            <table class="min-w-full divide-y divide-gray-300">
-                <thead id="thead_id">
-                  <!-- <tr class="divide-x divide-gray-200">
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-purple-800">Habits</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">1</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">2</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">3</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">4</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">5</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">6</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">7</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">8</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">9</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">10</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-purple-800">Goal</th>
-                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-purple-800">Achieved</th>
-                  </tr> -->
-                </thead>
-                <tbody id="tbody_id" class="divide-y divide-gray-200 bg-white">
-                  <!-- <tr onclick="cellClickHandler(event, 0)" id="habit-row-0" class="divide-x divide-gray-200">
-                    <td id="habit-title-1" class="whitespace-nowrap p-4 text-sm font-medium text-gray-900">Mock habit 1</td>
-                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
-                    <td class="habit-day-goal whitespace-nowrap p-4 text-sm text-gray-900">0</td>
-                    <td class="habit-day-achieved whitespace-nowrap p-4 text-sm text-gray-900">0</td>
-                  </tr> -->
+        <div id="content-section-id" class="w-full">
+          <table id="habits-table-id" class="min-w-full divide-y divide-gray-300">
+            <thead id="thead_id">
+              <!-- <tr class="divide-x divide-gray-200">
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-purple-800">Habits</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">1</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">2</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">3</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">4</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">5</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">6</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">7</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">8</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">9</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">10</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-purple-800">Goal</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-purple-800">Achieved</th>
+              </tr> -->
+            </thead>
+            <tbody id="tbody_id" class="divide-y divide-gray-200 bg-white">
+              <!-- <tr onclick="cellClickHandler(event, 0)" id="habit-row-0" class="divide-x divide-gray-200">
+                <td id="habit-title-1" class="whitespace-nowrap p-4 text-sm font-medium text-gray-900">Mock habit 1</td>
+                <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                <td class="habit-day whitespace-nowrap p-4 text-sm text-gray-500"></td>
+                <td class="habit-day-goal whitespace-nowrap p-4 text-sm text-gray-900">0</td>
+                <td class="habit-day-achieved whitespace-nowrap p-4 text-sm text-gray-900">0</td>
+              </tr> -->
              </tbody>
           </table>
+          <div class="hidden" id="no-habits-id">
+            <p>
+              There are no habits for now. Please add your first habit.
+            </p>
+          </div>
         </div>
         <div class="modal" id="modal-outer-id">
           <div class="modal-content" id="modal-inner-id">
-
           </div>
         </div>
     </div>

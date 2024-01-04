@@ -1,7 +1,10 @@
 const habitsContainer = document.querySelector("#tbody_id");
 const habitsHeaderContainer = document.querySelector("#thead_id");
+const habitsTable = document.querySelector("#habits-table-id");
+const noHabitsComponent = document.querySelector("#no-habits-id");
 const modalOuter = document.querySelector("#modal-outer-id");
 const modalInner = document.querySelector("#modal-inner-id");
+const contentContainer = document.querySelector("#content-section-id");
 
 const add_form = document.querySelector("#my-form");
 const inputs = add_form.elements;
@@ -21,6 +24,12 @@ const getNewDaysArray = (daysNum) => {
     }
 
     return resObj;
+}
+
+// if there are no habits added - show no habits message
+if(habitsData.length===0){
+    habitsTable.classList.toggle("hidden");
+    noHabitsComponent.classList.toggle("hidden")
 }
 
 const deleteHabit = ({id, habitsList}) => habitsList.filter((habit) => habit.id !== id);
