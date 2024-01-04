@@ -1,8 +1,9 @@
 const habitsContainer = document.querySelector("#tbody_id");
 const habitsHeaderContainer = document.querySelector("#thead_id");
+const modalOuter = document.querySelector("#modal-outer-id");
+const modalInner = document.querySelector("#modal-inner-id");
 
 const add_form = document.querySelector("#my-form");
-const edit_habit_form = document.querySelector(".edit-habit-form");
 const inputs = add_form.elements;
 const newHabitNameInput = inputs["name"];
 const newHabitGoalInput = inputs["goal"];
@@ -22,16 +23,107 @@ const getNewDaysArray = (daysNum) => {
     return resObj;
 }
 
-const deleteHabit = (id) => {
-    const updatedData = habitsData.filter((habit) => habit.id !== id);
+const deleteHabit = ({id, habitsList}) => habitsList.filter((habit) => habit.id !== id);
 
-    localStorage.setItem("habitsData", JSON.stringify(updatedData));
-}
+const editHabitTitle = ({id, habitsList, newTitle}) => habitsList.map((habit) => {
+    if (habit.id === id) {
+        return { ...habit, title: newTitle };
+    }
+    return habit;
+});
 
 const getRandomNumber = () => {
     return Math.random().toFixed(4)
 }
 
+const handleModalToggle = () => {
+    modalOuter.classList.toggle("!block");
+}
+
+const handleModalClose = () => {
+    modalInner.innerHTML = '';
+    handleModalToggle();
+}
+
+// this handler checks whether the click has occurred out of modal. And if yes - close the modal
+window.onclick = function(event) {
+    if (event.target == modalOuter) {
+        handleModalClose();
+    }
+}
+
+const createDeleteHabitForm = (habitId) => {
+    handleModalToggle();
+
+    const deleteHabitContainer = document.createElement("div");
+    const questionBeforeDelete = document.createElement("p");
+    questionBeforeDelete.textContent = "Do you want to delete a habit?";
+    // delete buttons modal container
+    const buttonsContainer = document.createElement("div");
+    // cancel delete button
+    const cancelDeleteButton = document.createElement("button");
+    cancelDeleteButton.setAttribute("id", "delete-cancel-btn");
+    cancelDeleteButton.setAttribute("type", "cancel");
+    cancelDeleteButton.textContent = "No";
+    // confirm delete button
+    const confirmDeleteButton = document.createElement("button");
+    confirmDeleteButton.setAttribute("id", "delete-submit-btn");
+    confirmDeleteButton.setAttribute("type", "submit");
+    confirmDeleteButton.textContent = "Yes";
+    // add buttons inside the container
+    buttonsContainer.appendChild(cancelDeleteButton);
+    buttonsContainer.appendChild(confirmDeleteButton);
+    // add the elements inside a main container
+    deleteHabitContainer.appendChild(questionBeforeDelete);
+    deleteHabitContainer.appendChild(buttonsContainer);
+    // add delete habit to modal
+    modalInner.appendChild(deleteHabitContainer);
+
+    cancelDeleteButton.addEventListener("click", handleModalClose);
+
+    confirmDeleteButton.addEventListener("click", function (e) {
+        const updatedData = deleteHabit({id: +habitId, habitsList: habitsData});
+        localStorage.setItem("habitsData", JSON.stringify(updatedData));
+
+        handleModalClose();
+    });
+}
+
+const createEditHabitForm = (habitId) => {
+    handleModalToggle();
+
+    const habitTitle = habitsData.find((habit) => habit.id === habitId).title;
+    const editForm = document.createElement("form");
+    editForm.setAttribute("id", "edit-habit-form");
+    // create edit title input
+    const editTitleInput = document.createElement("input");
+    editTitleInput.setAttribute("placeholder", "Please fill in a new title");
+    editTitleInput.setAttribute("name", "title");
+    editTitleInput.setAttribute("value", habitTitle);
+    editTitleInput.classList.add(...inputClasses);
+    // create edit button
+    const editTitleButton = document.createElement("input");
+    editTitleButton.setAttribute("id", "edit-title-btn");
+    editTitleButton.setAttribute("type", "submit");
+    editTitleButton.setAttribute("value", "Submit");
+    // add the elements inside a form
+    editForm.appendChild(editTitleInput);
+    editForm.appendChild(editTitleButton);
+    // add edit habit form to modal
+    modalInner.appendChild(editForm);
+
+    editForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const newTitle = editForm.elements["title"].value;
+        const updatedHabitsData = editHabitTitle({id: habitId, habitsList: habitsData, newTitle: newTitle});
+
+        localStorage.setItem("habitsData", JSON.stringify(updatedHabitsData));
+        
+        editForm.remove();
+        handleModalToggle();
+    });
+}
 
 add_form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -51,9 +143,6 @@ add_form.addEventListener("submit", (e) => {
 
     localStorage.setItem("habitsData", JSON.stringify(updatedHabitsData));
 });
-
-console.log(edit_habit_form, 'edit_habit_form')
-
 
 const toggleCellStyles = (cell) => {
     if(cell.classList.contains("habit-day")){
@@ -165,6 +254,7 @@ const tableHeadingDayIndexClasses = ["px-4", "py-3.5", "text-left", "text-sm", "
 document.addEventListener('DOMContentLoaded', function() {
     // localStorage.setItem("habitsData", JSON.stringify(habitsMock));
     // localStorage.clear();
+
     let daysCounter = 0;
 
     //the biggest habit goal in days
@@ -265,29 +355,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 habitsContainer.addEventListener("click", function(event){
+    const selectedRow = event.target.closest("tr");
+    const rowId = selectedRow.dataset.index;
+
     if(event.target.classList.contains("btn-delete")){
-        //TODO needs improvement
-        const selectedRow = event.target.closest("tr");
-        const rowId = selectedRow.dataset.index;
-        deleteHabit(+rowId);
+        createDeleteHabitForm(+rowId);
     }
     if(event.target.classList.contains("btn-edit")){
-        // create form element
-        const editForm = document.createElement("form");
-        editForm.classList.add("edit-habit-form");
-        // create edit title input
-        const editTitleInput = document.createElement("input");
-        editTitleInput.setAttribute("placeholder", "Please fill in a new title");
-        editTitleInput.setAttribute("name", "title");
-        editTitleInput.classList.add(...inputClasses);
-        // create edit button
-        const editTitleButton = document.createElement("input");
-        editTitleButton.setAttribute("type", "submit");
-        editTitleButton.setAttribute("value", "Submit");
-        // add the elements inside a form
-        editForm.appendChild(editTitleInput);
-        editForm.appendChild(editTitleButton);
-        document.body.appendChild(editForm);
+        createEditHabitForm(+rowId);
     }
     if(event.target.tagName === "TD"){
         let achivedCounter = 0;
