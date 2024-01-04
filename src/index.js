@@ -1,6 +1,7 @@
 const habitsContainer = document.querySelector("#tbody_id");
 const habitsHeaderContainer = document.querySelector("#thead_id");
-const modalContentElement = document.querySelector("#modal-content-id");
+const modalOuter = document.querySelector("#modal-outer-id");
+const modalInner = document.querySelector("#modal-inner-id");
 
 const add_form = document.querySelector("#my-form");
 const inputs = add_form.elements;
@@ -36,8 +37,19 @@ const getRandomNumber = () => {
 }
 
 const handleModalToggle = () => {
-    const modal = document.querySelector("#modal-id");
-    modal.classList.toggle("!block");
+    modalOuter.classList.toggle("!block");
+}
+
+const handleModalClose = () => {
+    modalInner.innerHTML = '';
+    handleModalToggle();
+}
+
+// this handler checks whether the click has occurred out of modal. And if yes - close the modal
+window.onclick = function(event) {
+    if (event.target == modalOuter) {
+        handleModalClose();
+    }
 }
 
 const createDeleteHabitForm = (habitId) => {
@@ -65,20 +77,15 @@ const createDeleteHabitForm = (habitId) => {
     deleteHabitContainer.appendChild(questionBeforeDelete);
     deleteHabitContainer.appendChild(buttonsContainer);
     // add delete habit to modal
-    modalContentElement.appendChild(deleteHabitContainer);
+    modalInner.appendChild(deleteHabitContainer);
 
-    cancelDeleteButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        deleteHabitContainer.remove();
-        handleModalToggle();
-    });
+    cancelDeleteButton.addEventListener("click", handleModalClose);
 
     confirmDeleteButton.addEventListener("click", function (e) {
-        e.preventDefault();
         const updatedData = deleteHabit({id: +habitId, habitsList: habitsData});
         localStorage.setItem("habitsData", JSON.stringify(updatedData));
-        deleteHabitContainer.remove();
-        handleModalToggle();
+
+        handleModalClose();
     });
 }
 
@@ -103,7 +110,7 @@ const createEditHabitForm = (habitId) => {
     editForm.appendChild(editTitleInput);
     editForm.appendChild(editTitleButton);
     // add edit habit form to modal
-    modalContentElement.appendChild(editForm);
+    modalInner.appendChild(editForm);
 
     editForm.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -247,6 +254,7 @@ const tableHeadingDayIndexClasses = ["px-4", "py-3.5", "text-left", "text-sm", "
 document.addEventListener('DOMContentLoaded', function() {
     // localStorage.setItem("habitsData", JSON.stringify(habitsMock));
     // localStorage.clear();
+
     let daysCounter = 0;
 
     //the biggest habit goal in days
@@ -352,8 +360,6 @@ habitsContainer.addEventListener("click", function(event){
 
     if(event.target.classList.contains("btn-delete")){
         createDeleteHabitForm(+rowId);
-        // const updatedData = deleteHabit({id: +rowId, habitsList: habitsData});
-        // localStorage.setItem("habitsData", JSON.stringify(updatedData));
     }
     if(event.target.classList.contains("btn-edit")){
         createEditHabitForm(+rowId);
