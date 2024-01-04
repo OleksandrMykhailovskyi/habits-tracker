@@ -40,6 +40,48 @@ const handleModalToggle = () => {
     modal.classList.toggle("!block");
 }
 
+const createDeleteHabitForm = (habitId) => {
+    handleModalToggle();
+
+    const deleteHabitContainer = document.createElement("div");
+    const questionBeforeDelete = document.createElement("p");
+    questionBeforeDelete.textContent = "Do you want to delete a habit?";
+    // delete buttons modal container
+    const buttonsContainer = document.createElement("div");
+    // cancel delete button
+    const cancelDeleteButton = document.createElement("button");
+    cancelDeleteButton.setAttribute("id", "delete-cancel-btn");
+    cancelDeleteButton.setAttribute("type", "cancel");
+    cancelDeleteButton.textContent = "No";
+    // confirm delete button
+    const confirmDeleteButton = document.createElement("button");
+    confirmDeleteButton.setAttribute("id", "delete-submit-btn");
+    confirmDeleteButton.setAttribute("type", "submit");
+    confirmDeleteButton.textContent = "Yes";
+    // add buttons inside the container
+    buttonsContainer.appendChild(cancelDeleteButton);
+    buttonsContainer.appendChild(confirmDeleteButton);
+    // add the elements inside a main container
+    deleteHabitContainer.appendChild(questionBeforeDelete);
+    deleteHabitContainer.appendChild(buttonsContainer);
+    // add delete habit to modal
+    modalContentElement.appendChild(deleteHabitContainer);
+
+    cancelDeleteButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        deleteHabitContainer.remove();
+        handleModalToggle();
+    });
+
+    confirmDeleteButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        const updatedData = deleteHabit({id: +habitId, habitsList: habitsData});
+        localStorage.setItem("habitsData", JSON.stringify(updatedData));
+        deleteHabitContainer.remove();
+        handleModalToggle();
+    });
+}
+
 const createEditHabitForm = (habitId) => {
     handleModalToggle();
 
@@ -63,7 +105,6 @@ const createEditHabitForm = (habitId) => {
     // add edit habit form to modal
     modalContentElement.appendChild(editForm);
 
-    // Add event listener to the dynamically created form
     editForm.addEventListener("submit", function (e) {
         e.preventDefault();
 
@@ -72,7 +113,6 @@ const createEditHabitForm = (habitId) => {
 
         localStorage.setItem("habitsData", JSON.stringify(updatedHabitsData));
         
-        //
         editForm.remove();
         handleModalToggle();
     });
@@ -311,8 +351,9 @@ habitsContainer.addEventListener("click", function(event){
     const rowId = selectedRow.dataset.index;
 
     if(event.target.classList.contains("btn-delete")){
-        const updatedData = deleteHabit({id: +rowId, habitsList: habitsData});
-        localStorage.setItem("habitsData", JSON.stringify(updatedData));
+        createDeleteHabitForm(+rowId);
+        // const updatedData = deleteHabit({id: +rowId, habitsList: habitsData});
+        // localStorage.setItem("habitsData", JSON.stringify(updatedData));
     }
     if(event.target.classList.contains("btn-edit")){
         createEditHabitForm(+rowId);
