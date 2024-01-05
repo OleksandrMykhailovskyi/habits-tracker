@@ -61,6 +61,13 @@ window.onclick = function(event) {
     }
 }
 
+// TODO: improve the way the data is updated. Here is a handler to reload the page
+document.addEventListener('page-reload', function () {
+    window.location.reload();
+});
+
+const pageReload = new Event('reload-page');
+
 const createDeleteHabitForm = (habitId) => {
     handleModalToggle();
 
@@ -93,6 +100,8 @@ const createDeleteHabitForm = (habitId) => {
     confirmDeleteButton.addEventListener("click", function (e) {
         const updatedData = deleteHabit({id: +habitId, habitsList: habitsData});
         localStorage.setItem("habitsData", JSON.stringify(updatedData));
+
+        document.dispatchEvent(pageReload);
 
         handleModalClose();
     });
@@ -128,6 +137,8 @@ const createEditHabitForm = (habitId) => {
         const updatedHabitsData = editHabitTitle({id: habitId, habitsList: habitsData, newTitle: newTitle});
 
         localStorage.setItem("habitsData", JSON.stringify(updatedHabitsData));
+
+        document.dispatchEvent(pageReload);
         
         editForm.remove();
         handleModalToggle();
@@ -151,6 +162,8 @@ add_form.addEventListener("submit", (e) => {
     ]
 
     localStorage.setItem("habitsData", JSON.stringify(updatedHabitsData));
+
+    document.dispatchEvent(pageReload);
 });
 
 const toggleCellStyles = (cell) => {
