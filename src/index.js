@@ -7,6 +7,11 @@ const modalInner = document.querySelector("#modal-inner-id");
 const contentContainer = document.querySelector("#content-section-id");
 const searchInput = document.querySelector("#search-input-id");
 
+const sortByTitleButton = document.querySelector("#sort-by-title");
+const sortByGoalButton = document.querySelector("#sort-by-goal");
+const sortByAchievedButton = document.querySelector("#sort-by-achieved");
+
+
 const add_form = document.querySelector("#my-form");
 const inputs = add_form.elements;
 const newHabitNameInput = inputs["name"];
@@ -188,6 +193,25 @@ const toggleCellStyles = (cell) => {
     }        
 }
 
+const sortByTitle = () => {
+    habitsData.sort((a, b) => a.title.localeCompare(b.title));
+    createTable(habitsData, '')
+}
+
+const sortByGoal = () => {
+    habitsData.sort((a, b) => b.goal - a.goal);
+    createTable(habitsData, '')
+}
+
+const sortByAchieved = () => {
+    habitsData.sort((a, b) => b.achieved / b.goal - a.achieved / a.goal);
+    createTable(habitsData, '')
+}
+
+sortByTitleButton.addEventListener("click", sortByTitle);
+sortByGoalButton.addEventListener("click", sortByGoal);
+sortByAchievedButton.addEventListener("click", sortByAchieved);
+
 // const habitsMock = [
 // 	{
 //         title: 'Read 30 mins/1 day 1',
@@ -283,6 +307,8 @@ const tableHeadingTableRowClasses = ["divide-x", "divide-gray-200"];
 const tableHeadingTableCategoryNameClasses = ["px-4", "py-3.5", "text-left", "text-sm", "font-semibold", "text-purple-800"];
 const tableHeadingDayIndexClasses = ["px-4", "py-3.5", "text-left", "text-sm", "font-semibold", "text-gray-900"];
 
+console.log(habitsData, 'habitsData')
+
 const getDaysAmount = (habitsData) => {
     let daysCounter = 0;
 
@@ -329,7 +355,7 @@ const createTableHeading = (daysCounter) => {
     habitsHeaderContainer.append(headingTableRow);
 }
 
-const createTableContent = (habitsData, searchValue, daysCounter) => {
+const createTableContent = (habitsData, daysCounter) => {
     habitsData
     .filter((habit) => habit.title.includes(searchValue))
     .forEach(({days, title, goal, achieved, id}) => {
@@ -364,7 +390,6 @@ const createTableContent = (habitsData, searchValue, daysCounter) => {
             tableCell.dataset.isChecked = item.checked;
             item.checked && tableCell.classList.add("day_selected");
             tableRow.append(tableCell);
-
             if(days.length-1 === index && index<daysCounter){
                 for(let j = 0; j < daysCounter - index-1; j++){
                     const tableCellDisabled = document.createElement("td");
@@ -391,7 +416,7 @@ const createTableContent = (habitsData, searchValue, daysCounter) => {
     })
 }
 
-const createTable = (habitsData, searchValue) => {
+const createTable = (habitsData) => {
     // localStorage.setItem("habitsData", JSON.stringify(habitsMock));
     // localStorage.clear();
 
@@ -402,11 +427,11 @@ const createTable = (habitsData, searchValue) => {
 
     createTableHeading(maxDaysAmount);
 
-    createTableContent(habitsData, searchValue, maxDaysAmount);
+    createTableContent(habitsData, maxDaysAmount);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    createTable(habitsData, searchValue);
+    createTable(habitsData);
 });
 
 habitsContainer.addEventListener("click", function(event){
