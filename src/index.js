@@ -307,8 +307,6 @@ const tableHeadingTableRowClasses = ["divide-x", "divide-gray-200"];
 const tableHeadingTableCategoryNameClasses = ["px-4", "py-3.5", "text-left", "text-sm", "font-semibold", "text-purple-800"];
 const tableHeadingDayIndexClasses = ["px-4", "py-3.5", "text-left", "text-sm", "font-semibold", "text-gray-900"];
 
-console.log(habitsData, 'habitsData')
-
 const getDaysAmount = (habitsData) => {
     let daysCounter = 0;
 
