@@ -428,6 +428,41 @@ const createTable = (habitsData) => {
     createTableContent(habitsData, maxDaysAmount);
 }
 
+const handleDayCellClick = (event, rowId, selectedRow) => {
+    let achievedCounter = 0;
+
+    const selectedAchievedCell = selectedRow.querySelector(".habit-day-achieved")
+    const habitDays = selectedRow.querySelectorAll(".habit-day");
+    
+    toggleCellStyles(event.target);
+
+    const updatedData = JSON.parse(localStorage.getItem("habitsData"))
+
+    for (let i = 0; i < habitDays.length; i++){
+        //TODO: refactor it
+        if(habitDays[i].dataset.isChecked === "true"){
+            ++achievedCounter;
+            updatedData.find((habit) => habit.id === +rowId).days[i].checked = true;
+        }else{
+            updatedData.find((habit) => habit.id === +rowId).days[i].checked = false;
+        }
+    }
+
+    const achievedData = updatedData.map((habit)=> {
+        if(+rowId === habit.id){
+            return {
+                ...habit,
+                achieved: achievedCounter,
+            }
+        }
+        return habit;
+    })
+
+    selectedAchievedCell.textContent = achievedCounter;
+
+    localStorage.setItem("habitsData", JSON.stringify(achievedData))
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     createTable(habitsData);
 });
@@ -442,42 +477,7 @@ habitsContainer.addEventListener("click", function(event){
     if(event.target.classList.contains("btn-edit")){
         createEditHabitForm(+rowId);
     }
-    if(event.target.tagName === "TD"){
-        let achivedCounter = 0;
-
-        const selectedRow = event.target.parentNode;
-
-        const rowId = selectedRow.dataset.index;
-
-        const selectedAchievedCell = selectedRow.querySelector(".habit-day-achieved")
-        
-        toggleCellStyles(event.target);
-
-        const habitDays = selectedRow.querySelectorAll(".habit-day");
-
-        for (let i = 0; i < habitDays.length; i++){
-            //TODO: refactor it
-            if(habitDays[i].dataset.isChecked === "true"){
-                ++achivedCounter;
-                habitsData.find((habit) => habit.id === +rowId).days[i].checked = true;
-            }else{
-                habitsData.find((habit) => habit.id === +rowId).days[i].checked = false;
-            }
-        }
-
-        const achievedData = habitsData.map((habit)=> {
-            if(+rowId === habit.id){
-                return {
-                    ...habit,
-                    achieved: achivedCounter,
-                }
-            }
-            return habit;
-        })
-
-        selectedAchievedCell.textContent = achivedCounter;
-
-        localStorage.setItem("habitsData", JSON.stringify(achievedData))
-
+    if(event.target.classList.contains("habit-day")){
+        handleDayCellClick(event, rowId, selectedRow);
     }
 });
