@@ -5,6 +5,7 @@ const noHabitsComponent = document.querySelector("#no-habits-id");
 const modalOuter = document.querySelector("#modal-outer-id");
 const modalInner = document.querySelector("#modal-inner-id");
 const contentContainer = document.querySelector("#content-section-id");
+const searchInput = document.querySelector("#search-input-id");
 
 const add_form = document.querySelector("#my-form");
 const inputs = add_form.elements;
@@ -12,6 +13,9 @@ const newHabitNameInput = inputs["name"];
 const newHabitGoalInput = inputs["goal"];
 
 const habitsData = JSON.parse(localStorage.getItem("habitsData"));
+
+// search field default value
+let searchValue = '';
 
 // the function that creates the array of days
 const getNewDaysArray = (daysNum) => {
@@ -54,6 +58,12 @@ const handleModalClose = () => {
     handleModalToggle();
 }
 
+// search field handler for onChange
+searchInput.addEventListener("change", (e) => {
+    searchValue = e.target.value;
+    createTable(habitsData, searchValue)
+})
+
 // this handler checks whether the click has occurred out of modal. And if yes - close the modal
 window.onclick = function(event) {
     if (event.target == modalOuter) {
@@ -66,7 +76,7 @@ document.addEventListener('page-reload', function () {
     window.location.reload();
 });
 
-const pageReload = new Event('reload-page');
+const pageReload = new Event('page-reload');
 
 const createDeleteHabitForm = (habitId) => {
     handleModalToggle();
@@ -273,10 +283,7 @@ const tableHeadingTableRowClasses = ["divide-x", "divide-gray-200"];
 const tableHeadingTableCategoryNameClasses = ["px-4", "py-3.5", "text-left", "text-sm", "font-semibold", "text-purple-800"];
 const tableHeadingDayIndexClasses = ["px-4", "py-3.5", "text-left", "text-sm", "font-semibold", "text-gray-900"];
 
-document.addEventListener('DOMContentLoaded', function() {
-    // localStorage.setItem("habitsData", JSON.stringify(habitsMock));
-    // localStorage.clear();
-
+const getDaysAmount = (habitsData) => {
     let daysCounter = 0;
 
     //the biggest habit goal in days
@@ -286,7 +293,46 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })
 
-    habitsData.forEach(({days, title, goal, achieved, id}) => {
+    return daysCounter;
+}
+
+const createTableHeading = (daysCounter) => {
+    const headingTableRow = document.createElement("tr");
+    headingTableRow.classList.add(...tableHeadingTableRowClasses);
+
+    // heading habit name
+    const headingHabitName = document.createElement("th");
+    headingHabitName.classList.add(...tableHeadingTableCategoryNameClasses);
+    headingHabitName.textContent = "Habit";
+    headingTableRow.append(headingHabitName);
+
+    // habit heading days
+    for(let i = 0 ; i<daysCounter; i++){
+        const tableHeadingDay = document.createElement("th");
+        tableHeadingDay.classList.add(...tableHeadingDayIndexClasses);
+        tableHeadingDay.textContent = i + 1;
+        headingTableRow.append(tableHeadingDay);
+    }
+
+    // heading habit goal days number
+    const headingHabitGoal = document.createElement("th");
+    headingHabitGoal.classList.add(...tableHeadingTableCategoryNameClasses);
+    headingHabitGoal.textContent = "Goal";
+    headingTableRow.append(headingHabitGoal);
+
+    // heading habit achieved days number
+    const headingAchievedGoal = document.createElement("th");
+    headingAchievedGoal.classList.add(...tableHeadingTableCategoryNameClasses);
+    headingAchievedGoal.textContent = "Achieved";
+    headingTableRow.append(headingAchievedGoal);
+
+    habitsHeaderContainer.append(headingTableRow);
+}
+
+const createTableContent = (habitsData, searchValue, daysCounter) => {
+    habitsData
+    .filter((habit) => habit.title.includes(searchValue))
+    .forEach(({days, title, goal, achieved, id}) => {
         //create habit row
         const tableRow = document.createElement("tr");
         tableRow.classList.add(...rowCellClasses);
@@ -343,37 +389,24 @@ document.addEventListener('DOMContentLoaded', function() {
         //append habit row into habitsContainer element
         habitsContainer.append(tableRow);
     })
+}
 
-    const headingTableRow = document.createElement("tr");
-    headingTableRow.classList.add(...tableHeadingTableRowClasses);
+const createTable = (habitsData, searchValue) => {
+    // localStorage.setItem("habitsData", JSON.stringify(habitsMock));
+    // localStorage.clear();
 
-    // heading habit name
-    const headingHabitName = document.createElement("th");
-    headingHabitName.classList.add(...tableHeadingTableCategoryNameClasses);
-    headingHabitName.textContent = "Habit";
-    headingTableRow.append(headingHabitName);
+    habitsContainer.innerHTML = '';
+    habitsHeaderContainer.innerHTML = '';
 
-    // habit heading days
-    for(let i = 0 ; i<daysCounter; i++){
-        const tableHeadingDay = document.createElement("th");
-        tableHeadingDay.classList.add(...tableHeadingDayIndexClasses);
-        tableHeadingDay.textContent = i + 1;
-        headingTableRow.append(tableHeadingDay);
-    }
+    const maxDaysAmount = getDaysAmount(habitsData);
 
-    // heading habit goal number
-    const headingHabitGoal = document.createElement("th");
-    headingHabitGoal.classList.add(...tableHeadingTableCategoryNameClasses);
-    headingHabitGoal.textContent = "Goal";
-    headingTableRow.append(headingHabitGoal);
+    createTableHeading(maxDaysAmount);
 
-    // heading habit goal number
-    const headingAchievedGoal = document.createElement("th");
-    headingAchievedGoal.classList.add(...tableHeadingTableCategoryNameClasses);
-    headingAchievedGoal.textContent = "Achieved";
-    headingTableRow.append(headingAchievedGoal);
+    createTableContent(habitsData, searchValue, maxDaysAmount);
+}
 
-    habitsHeaderContainer.append(headingTableRow);
+document.addEventListener('DOMContentLoaded', function() {
+    createTable(habitsData, searchValue);
 });
 
 habitsContainer.addEventListener("click", function(event){
