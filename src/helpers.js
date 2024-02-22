@@ -36,3 +36,16 @@ export function createElement(html) {
     div.innerHTML = html;
     return div.firstElementChild;
 }
+
+export const getDaysAmount = (habitsData) =>{
+    let daysCounter = 0;
+  
+    //the biggest habit goal in days
+    habitsData.forEach(({ days }) => {
+      if(days.length>daysCounter){
+          daysCounter = days.length;
+      }
+    })
+  
+    return daysCounter;
+  }
