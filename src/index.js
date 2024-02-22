@@ -49,14 +49,14 @@ if(habitsData.length===0){
     noHabitsComponent.classList.toggle("hidden")
 }
 
-const deleteHabit = ({id, habitsList}) => habitsList.filter((habit) => habit.id !== id);
+// const deleteHabit = ({id, habitsList}) => habitsList.filter((habit) => habit.id !== id);
 
-const editHabitTitle = ({id, habitsList, newTitle}) => habitsList.map((habit) => {
-    if (habit.id === id) {
-        return { ...habit, title: newTitle };
-    }
-    return habit;
-});
+// const editHabitTitle = ({id, habitsList, newTitle}) => habitsList.map((habit) => {
+//     if (habit.id === id) {
+//         return { ...habit, title: newTitle };
+//     }
+//     return habit;
+// });
 
 const getRandomNumber = () => {
     return Math.random().toFixed(4)
@@ -90,83 +90,6 @@ document.addEventListener('page-reload', function () {
 });
 
 const pageReload = new Event('page-reload');
-
-const createDeleteHabitForm = (habitId) => {
-  handleModalToggle();
-
-  const deleteHabitContainer = document.createElement("div");
-  const questionBeforeDelete = document.createElement("p");
-  questionBeforeDelete.textContent = "Do you want to delete a habit?";
-  // delete buttons modal container
-  const buttonsContainer = document.createElement("div");
-  // cancel delete button
-  const cancelDeleteButton = document.createElement("button");
-  cancelDeleteButton.setAttribute("id", "delete-cancel-btn");
-  cancelDeleteButton.setAttribute("type", "cancel");
-  cancelDeleteButton.textContent = "No";
-  // confirm delete button
-  const confirmDeleteButton = document.createElement("button");
-  confirmDeleteButton.setAttribute("id", "delete-submit-btn");
-  confirmDeleteButton.setAttribute("type", "submit");
-  confirmDeleteButton.textContent = "Yes";
-  // add buttons inside the container
-  buttonsContainer.appendChild(cancelDeleteButton);
-  buttonsContainer.appendChild(confirmDeleteButton);
-  // add the elements inside a main container
-  deleteHabitContainer.appendChild(questionBeforeDelete);
-  deleteHabitContainer.appendChild(buttonsContainer);
-  // add delete habit to modal
-  modalInner.appendChild(deleteHabitContainer);
-
-  cancelDeleteButton.addEventListener("click", handleModalClose);
-
-  confirmDeleteButton.addEventListener("click", function (e) {
-    const updatedData = deleteHabit({id: +habitId, habitsList: habitsData});
-    localStorage.setItem("habitsData", JSON.stringify(updatedData));
-
-    document.dispatchEvent(pageReload);
-
-    handleModalClose();
-  });
-}
-
-const createEditHabitForm = (habitId) => {
-  handleModalToggle();
-
-  const habitTitle = habitsData.find((habit) => habit.id === habitId).title;
-  const editForm = document.createElement("form");
-  editForm.setAttribute("id", "edit-habit-form");
-  // create edit title input
-  const editTitleInput = document.createElement("input");
-  editTitleInput.setAttribute("placeholder", "Please fill in a new title");
-  editTitleInput.setAttribute("name", "title");
-  editTitleInput.setAttribute("value", habitTitle);
-  editTitleInput.classList.add(...inputClasses);
-  // create edit button
-  const editTitleButton = document.createElement("input");
-  editTitleButton.setAttribute("id", "edit-title-btn");
-  editTitleButton.setAttribute("type", "submit");
-  editTitleButton.setAttribute("value", "Submit");
-  // add the elements inside a form
-  editForm.appendChild(editTitleInput);
-  editForm.appendChild(editTitleButton);
-  // add edit habit form to modal
-  modalInner.appendChild(editForm);
-
-  editForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const newTitle = editForm.elements["title"].value;
-    const updatedHabitsData = editHabitTitle({id: habitId, habitsList: habitsData, newTitle: newTitle});
-
-    localStorage.setItem("habitsData", JSON.stringify(updatedHabitsData));
-
-    document.dispatchEvent(pageReload);
-    
-    editForm.remove();
-    handleModalToggle();
-  });
-}
 
 add_form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -219,85 +142,6 @@ const sortByAchieved = () => {
 sortByTitleButton.addEventListener("click", sortByTitle);
 sortByGoalButton.addEventListener("click", sortByGoal);
 sortByAchievedButton.addEventListener("click", sortByAchieved);
-
-// const habitsMock = [
-// 	{
-//         title: 'Read 30 mins/1 day 1',
-//         goal: 10,
-//         achieved: 0,
-//         id: 0,
-//         days: [
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//         ] 
-//     }, 
-//     {
-//         title: 'Go running every day 1',
-//         goal: 10,
-//         achieved: 0,
-//         id: 1,
-//         days: [
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//             {
-//                 checked: false
-//             },
-//         ],
-//     }
-// ]
 
 // styles arrays
 const rowCellClasses = ["divide-x", "divide-gray-200"];
@@ -423,9 +267,6 @@ const createTableContent = (habitsData, daysCounter) => {
 }
 
 const createTable = (habitsData) => {
-    // localStorage.setItem("habitsData", JSON.stringify(habitsMock));
-    // localStorage.clear();
-
     habitsContainer.innerHTML = '';
     habitsHeaderContainer.innerHTML = '';
 
@@ -494,10 +335,9 @@ habitsContainer.addEventListener("click", function(event){
   }
 
   if(event.target.closest('.btn-edit')){
-    const modalContainer = document.querySelector("#modal-inner-id");
     handleModalToggle();
     const editHabitForm = new EditHabitForm(+rowId);
-    modalContainer.append(editHabitForm.elem);
+    modalInner.append(editHabitForm.elem);
 
     editHabitForm.elem.addEventListener('habit-updated', (event) => {
       console.log(`Habit with id "${event.detail.id}" updated. New title is "${event.detail.title}"`);
@@ -507,6 +347,7 @@ habitsContainer.addEventListener("click", function(event){
     }, { once: true });
 
   }
+  
   if(event.target.closest('.habit-day')){
       handleDayCellClick(event, rowId, selectedRow);
   }
