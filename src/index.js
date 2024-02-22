@@ -1,3 +1,6 @@
+import { DeleteHabitForm } from './components/DeleteHabitForm/index.js';
+import { EditHabitForm } from './components/EditHabitForm/index.js';
+
 const habitsContainer = document.querySelector("#tbody_id");
 const habitsHeaderContainer = document.querySelector("#thead_id");
 const habitsTable = document.querySelector("#habits-table-id");
@@ -16,6 +19,11 @@ const add_form = document.querySelector("#my-form");
 const inputs = add_form.elements;
 const newHabitNameInput = inputs["name"];
 const newHabitGoalInput = inputs["goal"];
+
+// if there is no habitsData array in local storage - create it
+if(!localStorage.getItem("habitsData")){
+  localStorage.setItem("habitsData", JSON.stringify([]));
+}
 
 const habitsData = JSON.parse(localStorage.getItem("habitsData"));
 
@@ -55,157 +63,157 @@ const getRandomNumber = () => {
 }
 
 const handleModalToggle = () => {
-    modalOuter.classList.toggle("!block");
+  modalOuter.classList.toggle("!block");
 }
 
 const handleModalClose = () => {
-    modalInner.innerHTML = '';
-    handleModalToggle();
+  modalInner.innerHTML = '';
+  handleModalToggle();
 }
 
 // search field handler for onChange
 searchInput.addEventListener("change", (e) => {
-    searchValue = e.target.value;
-    createTable(habitsData, searchValue)
+  searchValue = e.target.value;
+  createTable(habitsData, searchValue)
 })
 
 // this handler checks whether the click has occurred out of modal. And if yes - close the modal
 window.onclick = function(event) {
-    if (event.target == modalOuter) {
-        handleModalClose();
-    }
+  if (event.target == modalOuter) {
+    handleModalClose();
+  }
 }
 
 // TODO: improve the way the data is updated. Here is a handler to reload the page
 document.addEventListener('page-reload', function () {
-    window.location.reload();
+  window.location.reload();
 });
 
 const pageReload = new Event('page-reload');
 
 const createDeleteHabitForm = (habitId) => {
-    handleModalToggle();
+  handleModalToggle();
 
-    const deleteHabitContainer = document.createElement("div");
-    const questionBeforeDelete = document.createElement("p");
-    questionBeforeDelete.textContent = "Do you want to delete a habit?";
-    // delete buttons modal container
-    const buttonsContainer = document.createElement("div");
-    // cancel delete button
-    const cancelDeleteButton = document.createElement("button");
-    cancelDeleteButton.setAttribute("id", "delete-cancel-btn");
-    cancelDeleteButton.setAttribute("type", "cancel");
-    cancelDeleteButton.textContent = "No";
-    // confirm delete button
-    const confirmDeleteButton = document.createElement("button");
-    confirmDeleteButton.setAttribute("id", "delete-submit-btn");
-    confirmDeleteButton.setAttribute("type", "submit");
-    confirmDeleteButton.textContent = "Yes";
-    // add buttons inside the container
-    buttonsContainer.appendChild(cancelDeleteButton);
-    buttonsContainer.appendChild(confirmDeleteButton);
-    // add the elements inside a main container
-    deleteHabitContainer.appendChild(questionBeforeDelete);
-    deleteHabitContainer.appendChild(buttonsContainer);
-    // add delete habit to modal
-    modalInner.appendChild(deleteHabitContainer);
+  const deleteHabitContainer = document.createElement("div");
+  const questionBeforeDelete = document.createElement("p");
+  questionBeforeDelete.textContent = "Do you want to delete a habit?";
+  // delete buttons modal container
+  const buttonsContainer = document.createElement("div");
+  // cancel delete button
+  const cancelDeleteButton = document.createElement("button");
+  cancelDeleteButton.setAttribute("id", "delete-cancel-btn");
+  cancelDeleteButton.setAttribute("type", "cancel");
+  cancelDeleteButton.textContent = "No";
+  // confirm delete button
+  const confirmDeleteButton = document.createElement("button");
+  confirmDeleteButton.setAttribute("id", "delete-submit-btn");
+  confirmDeleteButton.setAttribute("type", "submit");
+  confirmDeleteButton.textContent = "Yes";
+  // add buttons inside the container
+  buttonsContainer.appendChild(cancelDeleteButton);
+  buttonsContainer.appendChild(confirmDeleteButton);
+  // add the elements inside a main container
+  deleteHabitContainer.appendChild(questionBeforeDelete);
+  deleteHabitContainer.appendChild(buttonsContainer);
+  // add delete habit to modal
+  modalInner.appendChild(deleteHabitContainer);
 
-    cancelDeleteButton.addEventListener("click", handleModalClose);
+  cancelDeleteButton.addEventListener("click", handleModalClose);
 
-    confirmDeleteButton.addEventListener("click", function (e) {
-        const updatedData = deleteHabit({id: +habitId, habitsList: habitsData});
-        localStorage.setItem("habitsData", JSON.stringify(updatedData));
+  confirmDeleteButton.addEventListener("click", function (e) {
+    const updatedData = deleteHabit({id: +habitId, habitsList: habitsData});
+    localStorage.setItem("habitsData", JSON.stringify(updatedData));
 
-        document.dispatchEvent(pageReload);
+    document.dispatchEvent(pageReload);
 
-        handleModalClose();
-    });
+    handleModalClose();
+  });
 }
 
 const createEditHabitForm = (habitId) => {
-    handleModalToggle();
+  handleModalToggle();
 
-    const habitTitle = habitsData.find((habit) => habit.id === habitId).title;
-    const editForm = document.createElement("form");
-    editForm.setAttribute("id", "edit-habit-form");
-    // create edit title input
-    const editTitleInput = document.createElement("input");
-    editTitleInput.setAttribute("placeholder", "Please fill in a new title");
-    editTitleInput.setAttribute("name", "title");
-    editTitleInput.setAttribute("value", habitTitle);
-    editTitleInput.classList.add(...inputClasses);
-    // create edit button
-    const editTitleButton = document.createElement("input");
-    editTitleButton.setAttribute("id", "edit-title-btn");
-    editTitleButton.setAttribute("type", "submit");
-    editTitleButton.setAttribute("value", "Submit");
-    // add the elements inside a form
-    editForm.appendChild(editTitleInput);
-    editForm.appendChild(editTitleButton);
-    // add edit habit form to modal
-    modalInner.appendChild(editForm);
+  const habitTitle = habitsData.find((habit) => habit.id === habitId).title;
+  const editForm = document.createElement("form");
+  editForm.setAttribute("id", "edit-habit-form");
+  // create edit title input
+  const editTitleInput = document.createElement("input");
+  editTitleInput.setAttribute("placeholder", "Please fill in a new title");
+  editTitleInput.setAttribute("name", "title");
+  editTitleInput.setAttribute("value", habitTitle);
+  editTitleInput.classList.add(...inputClasses);
+  // create edit button
+  const editTitleButton = document.createElement("input");
+  editTitleButton.setAttribute("id", "edit-title-btn");
+  editTitleButton.setAttribute("type", "submit");
+  editTitleButton.setAttribute("value", "Submit");
+  // add the elements inside a form
+  editForm.appendChild(editTitleInput);
+  editForm.appendChild(editTitleButton);
+  // add edit habit form to modal
+  modalInner.appendChild(editForm);
 
-    editForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const newTitle = editForm.elements["title"].value;
-        const updatedHabitsData = editHabitTitle({id: habitId, habitsList: habitsData, newTitle: newTitle});
-
-        localStorage.setItem("habitsData", JSON.stringify(updatedHabitsData));
-
-        document.dispatchEvent(pageReload);
-        
-        editForm.remove();
-        handleModalToggle();
-    });
-}
-
-add_form.addEventListener("submit", (e) => {
+  editForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const newHabitPayload = {
-        title: newHabitNameInput.value,
-        goal: +newHabitGoalInput.value,
-        achieved: 0,
-        days: getNewDaysArray(+newHabitGoalInput.value),
-        id: +getRandomNumber()
-    }
-
-    const updatedHabitsData = [
-        ...habitsData,
-        newHabitPayload
-    ]
+    const newTitle = editForm.elements["title"].value;
+    const updatedHabitsData = editHabitTitle({id: habitId, habitsList: habitsData, newTitle: newTitle});
 
     localStorage.setItem("habitsData", JSON.stringify(updatedHabitsData));
 
     document.dispatchEvent(pageReload);
+    
+    editForm.remove();
+    handleModalToggle();
+  });
+}
+
+add_form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const newHabitPayload = {
+    title: newHabitNameInput.value,
+    goal: +newHabitGoalInput.value,
+    achieved: 0,
+    days: getNewDaysArray(+newHabitGoalInput.value),
+    id: +getRandomNumber()
+  }
+
+  const updatedHabitsData = [
+    ...habitsData,
+    newHabitPayload
+  ]
+
+  localStorage.setItem("habitsData", JSON.stringify(updatedHabitsData));
+
+  document.dispatchEvent(pageReload);
 });
 
 const toggleCellStyles = (cell) => {
-    if(cell.classList.contains("habit-day")){
-        cell.classList.toggle("day_selected")
-        if(cell.dataset.isChecked==="true"){
-            cell.dataset.isChecked = false
-        }
-        else{
-            cell.dataset.isChecked = true
-        }
-    }        
+  if(cell.classList.contains("habit-day")){
+    cell.classList.toggle("day_selected")
+    if(cell.dataset.isChecked==="true"){
+      cell.dataset.isChecked = false
+    }
+    else{
+      cell.dataset.isChecked = true
+    }
+  }        
 }
 
 const sortByTitle = () => {
-    habitsData.sort((a, b) => a.title.localeCompare(b.title));
-    createTable(habitsData, '')
+  habitsData.sort((a, b) => a.title.localeCompare(b.title));
+  createTable(habitsData, '')
 }
 
 const sortByGoal = () => {
-    habitsData.sort((a, b) => b.goal - a.goal);
-    createTable(habitsData, '')
+  habitsData.sort((a, b) => b.goal - a.goal);
+  createTable(habitsData, '')
 }
 
 const sortByAchieved = () => {
-    habitsData.sort((a, b) => b.achieved / b.goal - a.achieved / a.goal);
-    createTable(habitsData, '')
+  habitsData.sort((a, b) => b.achieved / b.goal - a.achieved / a.goal);
+  createTable(habitsData, '')
 }
 
 sortByTitleButton.addEventListener("click", sortByTitle);
@@ -308,110 +316,110 @@ const tableHeadingTableCategoryNameClasses = ["px-4", "py-3.5", "text-left", "te
 const tableHeadingDayIndexClasses = ["px-4", "py-3.5", "text-left", "text-sm", "font-semibold", "text-gray-900"];
 
 const getDaysAmount = (habitsData) => {
-    let daysCounter = 0;
+  let daysCounter = 0;
 
-    //the biggest habit goal in days
-    habitsData.forEach(({ days }) => {
-        if(days.length>daysCounter){
-            daysCounter = days.length;
-        }
-    })
+  //the biggest habit goal in days
+  habitsData.forEach(({ days }) => {
+    if(days.length>daysCounter){
+        daysCounter = days.length;
+    }
+  })
 
-    return daysCounter;
+  return daysCounter;
 }
 
 const createTableHeading = (daysCounter) => {
-    const headingTableRow = document.createElement("tr");
-    headingTableRow.classList.add(...tableHeadingTableRowClasses);
+  const headingTableRow = document.createElement("tr");
+  headingTableRow.classList.add(...tableHeadingTableRowClasses);
 
-    // heading habit name
-    const headingHabitName = document.createElement("th");
-    headingHabitName.classList.add(...tableHeadingTableCategoryNameClasses);
-    headingHabitName.textContent = "Habit";
-    headingTableRow.append(headingHabitName);
+  // heading habit name
+  const headingHabitName = document.createElement("th");
+  headingHabitName.classList.add(...tableHeadingTableCategoryNameClasses);
+  headingHabitName.textContent = "Habit";
+  headingTableRow.append(headingHabitName);
 
-    // habit heading days
-    for(let i = 0 ; i<daysCounter; i++){
-        const tableHeadingDay = document.createElement("th");
-        tableHeadingDay.classList.add(...tableHeadingDayIndexClasses);
-        tableHeadingDay.textContent = i + 1;
-        headingTableRow.append(tableHeadingDay);
-    }
+  // habit heading days
+  for(let i = 0 ; i<daysCounter; i++){
+    const tableHeadingDay = document.createElement("th");
+    tableHeadingDay.classList.add(...tableHeadingDayIndexClasses);
+    tableHeadingDay.textContent = i + 1;
+    headingTableRow.append(tableHeadingDay);
+  }
 
-    // heading habit goal days number
-    const headingHabitGoal = document.createElement("th");
-    headingHabitGoal.classList.add(...tableHeadingTableCategoryNameClasses);
-    headingHabitGoal.textContent = "Goal";
-    headingTableRow.append(headingHabitGoal);
+  // heading habit goal days number
+  const headingHabitGoal = document.createElement("th");
+  headingHabitGoal.classList.add(...tableHeadingTableCategoryNameClasses);
+  headingHabitGoal.textContent = "Goal";
+  headingTableRow.append(headingHabitGoal);
 
-    // heading habit achieved days number
-    const headingAchievedGoal = document.createElement("th");
-    headingAchievedGoal.classList.add(...tableHeadingTableCategoryNameClasses);
-    headingAchievedGoal.textContent = "Achieved";
-    headingTableRow.append(headingAchievedGoal);
+  // heading habit achieved days number
+  const headingAchievedGoal = document.createElement("th");
+  headingAchievedGoal.classList.add(...tableHeadingTableCategoryNameClasses);
+  headingAchievedGoal.textContent = "Achieved";
+  headingTableRow.append(headingAchievedGoal);
 
-    habitsHeaderContainer.append(headingTableRow);
+  habitsHeaderContainer.append(headingTableRow);
 }
 
 const createTableContent = (habitsData, daysCounter) => {
-    habitsData
-    .filter((habit) => habit.title.includes(searchValue))
-    .forEach(({days, title, goal, achieved, id}) => {
-        //create habit row
-        const tableRow = document.createElement("tr");
-        tableRow.classList.add(...rowCellClasses);
-        tableRow.dataset.index = id;
+  habitsData
+  .filter((habit) => habit.title.includes(searchValue))
+  .forEach(({days, title, goal, achieved, id}) => {
+    //create habit row
+    const tableRow = document.createElement("tr");
+    tableRow.classList.add(...rowCellClasses);
+    tableRow.dataset.index = id;
 
-        //habit heading
-        const rowHeading = document.createElement("td");
-        rowHeading.classList.add(...headingCellClasses);
-        rowHeading.textContent = title;
+    //habit heading
+    const rowHeading = document.createElement("td");
+    rowHeading.classList.add(...headingCellClasses);
+    rowHeading.textContent = title;
 
-        //edit Habit button
-        const editButton = document.createElement("button");
-        editButton.classList.add(...editButtonClasses);
-        editButton.textContent = 'Edit title';
-        rowHeading.append(editButton);
+    //edit Habit button
+    const editButton = document.createElement("button");
+    editButton.classList.add(...editButtonClasses);
+    editButton.textContent = 'Edit title';
+    rowHeading.append(editButton);
 
-        //delete Habit button
-        const deleteButton = document.createElement("button");
-        deleteButton.classList.add(...deleteButtonClasses);
-        deleteButton.textContent = 'Delete';
-        rowHeading.append(deleteButton);
+    //delete Habit button
+    const deleteButton = document.createElement("button");
+    deleteButton.classList.add(...deleteButtonClasses);
+    deleteButton.textContent = 'Delete';
+    rowHeading.append(deleteButton);
 
-        tableRow.append(rowHeading);
+    tableRow.append(rowHeading);
 
-        //habit days
-        days.forEach((item, index) => {
-            const tableCell = document.createElement("td");
-            tableCell.classList.add(...dayCellClasses);
-            tableCell.dataset.isChecked = item.checked;
-            item.checked && tableCell.classList.add("day_selected");
-            tableRow.append(tableCell);
-            if(days.length-1 === index && index<daysCounter){
-                for(let j = 0; j < daysCounter - index-1; j++){
-                    const tableCellDisabled = document.createElement("td");
-                    tableCellDisabled.classList.add(...dayCellDisabledClasses);
-                    tableRow.append(tableCellDisabled);
-                }
-            }
-        });
+    //habit days
+    days.forEach((item, index) => {
+      const tableCell = document.createElement("td");
+      tableCell.classList.add(...dayCellClasses);
+      tableCell.dataset.isChecked = item.checked;
+      item.checked && tableCell.classList.add("day_selected");
+      tableRow.append(tableCell);
+      if(days.length-1 === index && index<daysCounter){
+        for(let j = 0; j < daysCounter - index-1; j++){
+          const tableCellDisabled = document.createElement("td");
+          tableCellDisabled.classList.add(...dayCellDisabledClasses);
+          tableRow.append(tableCellDisabled);
+        }
+      }
+    });
 
-        //habit goal
-        const goalCell = document.createElement("td");
-        goalCell.classList.add(...goalCellStyles);
-        goalCell.textContent = goal;
-        tableRow.append(goalCell);
+    //habit goal
+    const goalCell = document.createElement("td");
+    goalCell.classList.add(...goalCellStyles);
+    goalCell.textContent = goal;
+    tableRow.append(goalCell);
 
-        //habit achieved
-        const achievedCell = document.createElement("td");
-        achievedCell.classList.add(...achievedCellStyles);
-        achievedCell.textContent = achieved;
-        tableRow.append(achievedCell);
+    //habit achieved
+    const achievedCell = document.createElement("td");
+    achievedCell.classList.add(...achievedCellStyles);
+    achievedCell.textContent = achieved;
+    tableRow.append(achievedCell);
 
-        //append habit row into habitsContainer element
-        habitsContainer.append(tableRow);
-    })
+    //append habit row into habitsContainer element
+    habitsContainer.append(tableRow);
+  })
 }
 
 const createTable = (habitsData) => {
@@ -468,16 +476,38 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 habitsContainer.addEventListener("click", function(event){
-    const selectedRow = event.target.closest("tr");
-    const rowId = selectedRow.dataset.index;
+  const selectedRow = event.target.closest("tr");
+  const rowId = selectedRow.dataset.index;
 
-    if(event.target.classList.contains("btn-delete")){
-        createDeleteHabitForm(+rowId);
-    }
-    if(event.target.classList.contains("btn-edit")){
-        createEditHabitForm(+rowId);
-    }
-    if(event.target.classList.contains("habit-day")){
-        handleDayCellClick(event, rowId, selectedRow);
-    }
+  if(event.target.closest('.btn-delete')){
+      handleModalToggle();
+      const deleteHabitForm = new DeleteHabitForm(+rowId);
+      modalInner.append(deleteHabitForm.elem);
+      deleteHabitForm.elem.addEventListener('habit-deleted', (event) => {
+        console.log(`Habit with id "${event.detail.id}" is deleted.`);
+        document.dispatchEvent(pageReload);
+        handleModalClose();
+      });
+      deleteHabitForm.elem.addEventListener('habit-delete-cancel', () => {
+          handleModalClose();
+      });
+  }
+
+  if(event.target.closest('.btn-edit')){
+    const modalContainer = document.querySelector("#modal-inner-id");
+    handleModalToggle();
+    const editHabitForm = new EditHabitForm(+rowId);
+    modalContainer.append(editHabitForm.elem);
+
+    editHabitForm.elem.addEventListener('habit-updated', (event) => {
+      console.log(`Habit with id "${event.detail.id}" updated. New title is "${event.detail.title}"`);
+      document.dispatchEvent(pageReload);
+      editHabitForm.close();
+      handleModalToggle();
+    }, { once: true });
+
+  }
+  if(event.target.closest('.habit-day')){
+      handleDayCellClick(event, rowId, selectedRow);
+  }
 });
