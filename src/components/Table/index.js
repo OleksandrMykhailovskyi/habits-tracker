@@ -1,5 +1,5 @@
-import {getDaysAmount} from '../../helpers.js'
-import {tableHeadingClasses, tableContentClasses} from './styles-classes.js'
+import { getMaxDaysAmount } from '../../helpers.js'
+import { tableHeadingClasses, tableContentClasses } from './styles-classes.js'
 
 const { dayIndexClasses, tableCategoryClasses, tableRowClasses } = tableHeadingClasses;
 const {
@@ -28,7 +28,7 @@ export class Table {
     this.habitsContainer.innerHTML = '';
     this.habitsHeaderContainer.innerHTML = '';
 
-    const maxDaysAmount = getDaysAmount(this.habitsData);
+    const maxDaysAmount = getMaxDaysAmount(this.habitsData);
 
     this.createTableHeading(maxDaysAmount);
     this.createTableContent(this.habitsData, maxDaysAmount);

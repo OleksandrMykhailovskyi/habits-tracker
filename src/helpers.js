@@ -37,15 +37,20 @@ export function createElement(html) {
     return div.firstElementChild;
 }
 
-export const getDaysAmount = (habitsData) =>{
-    let daysCounter = 0;
-  
-    //the biggest habit goal in days
-    habitsData.forEach(({ days }) => {
-      if(days.length>daysCounter){
-          daysCounter = days.length;
-      }
-    })
-  
-    return daysCounter;
-  }
+// this function checks the biggest goal to draw the table accordingly
+export const getMaxDaysAmount = (habitsData) => {
+  return habitsData.reduce(function (accumulator, currentValue) {
+    return currentValue.days.length > accumulator ? currentValue.days.length : accumulator;
+  }, 0);
+}
+
+// the function that creates the array of days
+export const getNewDaysArray = (daysNum) => {
+  return Array.from(Array(daysNum)).map(() => (
+    {
+      "checked": false
+    }
+  ));
+}
+
+export const getHabitId = () => +Math.random().toFixed(4)
