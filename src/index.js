@@ -1,6 +1,7 @@
 import { DeleteHabitForm } from './components/DeleteHabitForm/index.js';
 import { EditHabitForm } from './components/EditHabitForm/index.js';
 import { Table } from './components/Table/index.js';
+import { getNewDaysArray, getHabitId } from './helpers.js'
 
 const habitsContainer = document.querySelector("#tbody_id");
 const habitsTable = document.querySelector("#habits-table-id");
@@ -12,7 +13,6 @@ const searchInput = document.querySelector("#search-input-id");
 const sortByTitleButton = document.querySelector("#sort-by-title");
 const sortByGoalButton = document.querySelector("#sort-by-goal");
 const sortByAchievedButton = document.querySelector("#sort-by-achieved");
-
 
 const add_form = document.querySelector("#my-form");
 const inputs = add_form.elements;
@@ -26,27 +26,10 @@ if(!localStorage.getItem("habitsData")){
 
 const habitsData = JSON.parse(localStorage.getItem("habitsData"));
 
-// the function that creates the array of days
-const getNewDaysArray = (daysNum) => {
-    const resObj = [];
-
-    for(let i = 0; i<daysNum; i++){
-        resObj.push({
-            checked: false
-        })
-    }
-
-    return resObj;
-}
-
 // if there are no habits added - show no habits message
 if(habitsData.length===0){
     habitsTable.classList.toggle("hidden");
     noHabitsComponent.classList.toggle("hidden")
-}
-
-const getRandomNumber = () => {
-    return Math.random().toFixed(4)
 }
 
 const handleModalToggle = () => {
@@ -85,7 +68,7 @@ add_form.addEventListener("submit", (e) => {
     goal: +newHabitGoalInput.value,
     achieved: 0,
     days: getNewDaysArray(+newHabitGoalInput.value),
-    id: +getRandomNumber()
+    id: getHabitId()
   }
 
   const updatedHabitsData = [
